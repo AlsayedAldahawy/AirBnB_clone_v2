@@ -10,6 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from ast import literal_eval
 
 
 class HBNBCommand(cmd.Cmd):
@@ -115,13 +116,35 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
+
+        params = args.split(' ')
+
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        elif params[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
+        
+        print(params)
+        params_dict = {}
+
+        for param in params[1:]:
+            if '=' not in param:
+                continue
+
+            key = param.split('=')[0]
+            value = param.split('=')[1].replace('_', ' ')
+
+            try:
+                value = literal_eval(value)
+            except:
+                pass
+
+            params_dict[key] = value
+
+
+        new_instance = HBNBCommand.classes[params[0]](**params_dict)
         storage.save()
         print(new_instance.id)
         storage.save()
