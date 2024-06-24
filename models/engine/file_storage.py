@@ -12,10 +12,9 @@ class FileStorage:
         """Returns a dictionary of models currently in storage"""
         if cls == None or not cls:
             return FileStorage.__objects
-        
-        className = str(cls).split('.')[2].split("'")[0]        
-        return {k: v for k, v in FileStorage.__objects.items() if k.startswith(className)}
 
+        className = str(cls).split('.')[2].split("'")[0]
+        return {k: v for k, v in FileStorage.__objects.items() if k.startswith(className)}
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -41,23 +40,39 @@ class FileStorage:
         from models.review import Review
 
         classes = {
-                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-                    'State': State, 'City': City, 'Amenity': Amenity,
-                    'Review': Review
-                  }
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
         try:
             temp = {}
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
+        """
+        Deletes an instance based on the object passed.
+
+        This method deletes an instance from the '__objects' dictionary of the 'FileStorage' class.
+        It searches for the object in the values of the '__objects' dictionary. If found, it retrieves
+        the corresponding key and deletes the key-value pair from the dictionary.
+
+        Parameters:
+        - obj (object): The object to be deleted from the storage.
+
+        Returns:
+        None
+        """
         if obj in FileStorage.__objects.values():
-            keyToDelete = next(k for k, v in FileStorage.__objects.items() if v == obj)
-            # print("keyTD : {}, ObjectTD {} -> objPassed {}".format(keyToDelete, FileStorage.__objects[keyToDelete], obj))
+            # Retrieve the key for the object to be deleted
+            keyToDelete = next(
+                k for k, v in FileStorage.__objects.items() if v == obj)
+            # Delete the key-value pair from the dictionary
             del FileStorage.__objects[keyToDelete]
         else:
+            # If the object is not found, do nothing
             pass
