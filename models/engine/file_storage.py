@@ -74,5 +74,4 @@ class FileStorage:
             # Delete the key-value pair from the dictionary
             del FileStorage.__objects[keyToDelete]
         else:
-            # If the object is not found, do nothing
             pass
