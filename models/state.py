@@ -16,17 +16,16 @@ class State(BaseModel, Base):
     else:
         @property
         def cities(self):
-            '''
-
-            '''
-            from models import storage, city
-
-            City = city.City
+            """
+            Returns a list of City objects associated with this State.
+            """
+            from models import storage
+            from models.city import City
 
             city_list = []
 
-            for i in storage.all(City).values():
-                if i.state_id == self.id:
-                    city_list.append(i)
+            for city in storage.all(City).values():
+                if city.state_id == self.id:
+                    city_list.append(city)
             return city_list
 
